@@ -1,31 +1,46 @@
 import flwr as fl
-from flwr.server.server import ServerConfig  # new import
-import pickle
+from flwr.server.server import ServerConfig
 import os
+import tensorflow as tf
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense, Input
 
-MODEL_PATH = "model/global_model.pkl"
-
-# Ensure model directory exists
+MODEL_PATH = "model/global_model.h5"
 os.makedirs("model", exist_ok=True)
 
-# Custom strategy to save model after each aggregation
-class SaveModelStrategy(fl.server.strategy.FedAvg):
+# Custom strategy to save TensorFlow model after each round
+class SaveTFModelStrategy(fl.server.strategy.FedAvg):
     def aggregate_fit(self, rnd, results, failures):
         aggregated_parameters, metrics = super().aggregate_fit(rnd, results, failures)
 
         if aggregated_parameters is not None:
-            print(f"[SERVER] Saving global model after round {rnd}...")
+            print(f"[SERVER] Saving global TensorFlow model after round {rnd}...")
+            # Convert Flower parameters (list of ndarrays) to TensorFlow model
+            model = build_model()  # same model architecture as clients
             params = fl.common.parameters_to_ndarrays(aggregated_parameters)
-
-            # Example: using simple list of numpy arrays as "model"
-            with open(MODEL_PATH, "wb") as f:
-                pickle.dump(params, f)
+            model.set_weights(params)
+            model.save(MODEL_PATH)
 
         return aggregated_parameters, metrics
 
+# Example function to rebuild the same model architecture as clients
+def build_model():
+    input_shape = 11  # number of features
+    model = Sequential([
+        Input(shape=(input_shape,)),
+        Dense(32, activation="relu"),
+        Dense(32, activation="relu"),
+        Dense(3, activation="softmax")  # 3 classes: low, medium, high
+    ])
+    model.compile(
+        optimizer="adam",
+        loss="sparse_categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+    return model
 
 def main():
-    strategy = SaveModelStrategy(
+    strategy = SaveTFModelStrategy(
         min_fit_clients=2,
         min_available_clients=2,
         min_evaluate_clients=2,
@@ -33,15 +48,13 @@ def main():
         fraction_evaluate=1.0,
     )
 
-
-    server_config = ServerConfig(num_rounds=5)
+    server_config = ServerConfig(num_rounds=3)
     print("Starting Flower Server...")
     fl.server.start_server(
         server_address="0.0.0.0:8080",
         strategy=strategy,
         config=server_config,
     )
-
 
 if __name__ == "__main__":
     main()

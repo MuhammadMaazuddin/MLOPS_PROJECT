@@ -3,9 +3,9 @@ FROM python:3.10-slim
 WORKDIR /app
 
 COPY serve.py ./
-COPY model ./model
+COPY model ./model   
 
-RUN pip install fastapi uvicorn pandas numpy
+RUN pip install --no-cache-dir fastapi uvicorn pandas numpy tensorflow
 
 EXPOSE 8000
 
