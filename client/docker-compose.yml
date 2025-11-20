@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+
+  wearable_a:
+    build: .
+    container_name: wearable_a
+    environment:
+      - NODE_DATA=/app/data/wearable_A.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  wearable_b:
+    build: .
+    container_name: wearable_b
+    environment:
+      - NODE_DATA=/app/data/wearable_B.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  weather_a:
+    build: .
+    container_name: weather_a
+    environment:
+      - NODE_DATA=/app/data/weather_A.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  weather_b:
+    build: .
+    container_name: weather_b
+    environment:
+      - NODE_DATA=/app/data/weather_B.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  hospital_a:
+    build: .
+    container_name: hospital_a
+    environment:
+      - NODE_DATA=/app/data/hospital_A.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  hospital_b:
+    build: .
+    container_name: hospital_b
+    environment:
+      - NODE_DATA=/app/data/hospital_B.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  city_a:
+    build: .
+    container_name: city_a
+    environment:
+      - NODE_DATA=/app/data/city_A.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  city_b:
+    build: .
+    container_name: city_b
+    environment:
+      - NODE_DATA=/app/data/city_B.csv
+    depends_on:
+      - server
+    networks:
+      - flnet
+
+  # Server will run in server/docker-compose.yml, not here
+  server:
+    image: server-server
+    container_name: server-server
+    networks:
+      - flnet
+
+networks:
+  flnet:

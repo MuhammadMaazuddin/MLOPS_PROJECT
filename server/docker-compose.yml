@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  fl_server:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    container_name: fl_server
+    ports:
+      - "8080:8080"
+    networks:
+      - flnet
+
+  model_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.serve
+    container_name: model_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./model:/app/model  # make sure global_model.h5 is saved here
+    networks:
+      - flnet
+
+networks:
+  flnet:
+    driver: bridge
