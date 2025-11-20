@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
 
-  wearable_A:
+  wearable_a:
     build: .
-    container_name: wearable_A
+    container_name: wearable_a
     environment:
       - NODE_DATA=/app/data/wearable_A.csv
     depends_on:
@@ -12,9 +12,9 @@ services:
     networks:
       - flnet
 
-  wearable_B:
+  wearable_b:
     build: .
-    container_name: wearable_B
+    container_name: wearable_b
     environment:
       - NODE_DATA=/app/data/wearable_B.csv
     depends_on:
@@ -22,9 +22,9 @@ services:
     networks:
       - flnet
 
-  weather_A:
+  weather_a:
     build: .
-    container_name: weather_A
+    container_name: weather_a
     environment:
       - NODE_DATA=/app/data/weather_A.csv
     depends_on:
@@ -32,9 +32,9 @@ services:
     networks:
       - flnet
 
-  weather_B:
+  weather_b:
     build: .
-    container_name: weather_B
+    container_name: weather_b
     environment:
       - NODE_DATA=/app/data/weather_B.csv
     depends_on:
@@ -42,9 +42,9 @@ services:
     networks:
       - flnet
 
-  hospital_A:
+  hospital_a:
     build: .
-    container_name: hospital_A
+    container_name: hospital_a
     environment:
       - NODE_DATA=/app/data/hospital_A.csv
     depends_on:
@@ -52,9 +52,9 @@ services:
     networks:
       - flnet
 
-  hospital_B:
+  hospital_b:
     build: .
-    container_name: hospital_B
+    container_name: hospital_b
     environment:
       - NODE_DATA=/app/data/hospital_B.csv
     depends_on:
@@ -62,9 +62,9 @@ services:
     networks:
       - flnet
 
-  city_A:
+  city_a:
     build: .
-    container_name: city_A
+    container_name: city_a
     environment:
       - NODE_DATA=/app/data/city_A.csv
     depends_on:
@@ -72,9 +72,9 @@ services:
     networks:
       - flnet
 
-  city_B:
+  city_b:
     build: .
-    container_name: city_B
+    container_name: city_b
     environment:
       - NODE_DATA=/app/data/city_B.csv
     depends_on:
@@ -84,8 +84,8 @@ services:
 
   # Server will run in server/docker-compose.yml, not here
   server:
-    image: fl_server_img
-    container_name: server
+    image: server-server
+    container_name: server-server
     networks:
       - flnet
 

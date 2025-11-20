@@ -1,4 +1,5 @@
 import flwr as fl
+from flwr.server.server import ServerConfig  # new import
 import pickle
 import os
 
@@ -27,16 +28,18 @@ def main():
     strategy = SaveModelStrategy(
         min_fit_clients=2,
         min_available_clients=2,
-        min_eval_clients=2,
+        min_evaluate_clients=2,
         fraction_fit=1.0,
-        fraction_eval=1.0,
+        fraction_evaluate=1.0,
     )
 
+
+    server_config = ServerConfig(num_rounds=5)
     print("Starting Flower Server...")
     fl.server.start_server(
         server_address="0.0.0.0:8080",
         strategy=strategy,
-        config={"num_rounds": 5},
+        config=server_config,
     )
 
 
