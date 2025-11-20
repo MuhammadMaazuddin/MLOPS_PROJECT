@@ -1,0 +1,12 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY serve_api.py ./
+COPY model ./model
+
+RUN pip install fastapi uvicorn pandas numpy
+
+EXPOSE 8000
+
+CMD ["uvicorn", "serve_api:app", "--host", "0.0.0.0", "--port", "8000"]
