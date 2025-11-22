@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Citizen Portal</h1>
+    <p class="text-gray-500 mt-2">Your personalized health safety dashboard.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Personal Status Card -->
+    <div class="bg-white rounded-lg shadow p-6 lg:col-span-1">
+      <h2 class="text-lg font-medium text-gray-900 mb-6">Your Risk Status</h2>
+      <div class="flex flex-col items-center justify-center">
+        <div class="relative h-48 w-48">
+          <!-- Gauge Background -->
+          <svg class="h-full w-full transform -rotate-90" viewBox="0 0 36 36">
+            <path class="text-gray-200" stroke-width="3" stroke="currentColor" fill="none"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="text-secondary" stroke-dasharray="{{ status.risk_score }}, 100" stroke-width="3"
+              stroke="currentColor" fill="none"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-4xl font-bold text-gray-900">{{ status.risk_score }}%</span>
+            <span class="text-sm text-gray-500">Risk Score</span>
+          </div>
+        </div>
+        <div class="mt-6 text-center">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+            Status: {{ status.status }}
+          </span>
+          <p class="text-xs text-gray-400 mt-2">Last updated: {{ status.last_updated }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations & Trends -->
+    <div class="lg:col-span-2 space-y-8">
+      <!-- Recommendations -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Personalized Recommendations</h2>
+        <ul class="space-y-4">
+          {% for rec in recommendations %}
+          <li class="flex items-start">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <p class="ml-3 text-base text-gray-700">{{ rec }}</p>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Local Trends -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Local Trends</h2>
+        <div class="h-48 bg-gray-50 rounded-lg flex items-end justify-between px-4 pb-4 space-x-2">
+          <!-- Mock Bar Chart -->
+          <div class="w-full bg-blue-200 rounded-t" style="height: 30%"></div>
+          <div class="w-full bg-blue-300 rounded-t" style="height: 45%"></div>
+          <div class="w-full bg-blue-400 rounded-t" style="height: 35%"></div>
+          <div class="w-full bg-blue-500 rounded-t" style="height: 60%"></div>
+          <div class="w-full bg-blue-600 rounded-t" style="height: 55%"></div>
+          <div class="w-full bg-primary rounded-t" style="height: 75%"></div>
+          <div class="w-full bg-blue-800 rounded-t" style="height: 65%"></div>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-gray-500">
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
