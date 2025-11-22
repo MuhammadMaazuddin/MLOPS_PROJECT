@@ -19,7 +19,27 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./model:/app/model  # make sure global_model.h5 is saved here
+      - ./model:/app/model # make sure global_model.h5 is saved here
+    networks:
+      - flnet
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - flnet
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     networks:
       - flnet
 

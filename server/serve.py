@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 import numpy as np
 import tensorflow as tf
 
@@ -16,6 +17,9 @@ else:
 
 # Initialize FastAPI
 app = FastAPI()
+
+# Instrument FastAPI with Prometheus
+Instrumentator().instrument(app).expose(app)
 
 # Define input schema
 class ModelInput(BaseModel):
