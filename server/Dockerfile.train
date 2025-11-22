@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY fl_server.py ./
 
-RUN pip install --no-cache-dir flwr tensorflow pandas numpy scikit-learn mlflow
+RUN pip install --no-cache-dir flwr tensorflow pandas numpy scikit-learn mlflow prometheus-client
 
 EXPOSE 8080
 

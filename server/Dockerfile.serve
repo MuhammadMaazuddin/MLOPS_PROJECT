@@ -5,7 +5,7 @@ WORKDIR /app
 COPY serve.py ./
 COPY model ./model   
 
-RUN pip install --no-cache-dir fastapi uvicorn pandas numpy tensorflow
+RUN pip install --no-cache-dir fastapi uvicorn pandas numpy tensorflow prometheus-fastapi-instrumentator
 
 EXPOSE 8000
 

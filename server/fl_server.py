@@ -1,6 +1,8 @@
 import flwr as fl
 from flwr.server.server import ServerConfig
 import mlflow
+from prometheus_client import start_http_server, Summary, Gauge
+import threading
 import os
 import tensorflow as tf
 from tensorflow.keras import Sequential
@@ -11,11 +13,17 @@ MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 mlflow.set_experiment("federated_learning_experiment")
 
+# Prometheus Metrics
+ROUND_LATENCY = Summary('fl_round_latency_seconds', 'Time spent processing a round')
+GLOBAL_ACCURACY = Gauge('fl_global_accuracy', 'Global model accuracy')
+GLOBAL_LOSS = Gauge('fl_global_loss', 'Global model loss')
+
 MODEL_PATH = "model/global_model.h5"
 os.makedirs("model", exist_ok=True)
 
 # Custom strategy to save TensorFlow model after each round
 class SaveTFModelStrategy(fl.server.strategy.FedAvg):
+    @ROUND_LATENCY.time()
     def aggregate_fit(self, rnd, results, failures):
         aggregated_parameters, metrics = super().aggregate_fit(rnd, results, failures)
 
@@ -35,6 +43,11 @@ class SaveTFModelStrategy(fl.server.strategy.FedAvg):
                 # We'll assume metrics is a dictionary for now.
                 if metrics:
                     mlflow.log_metrics(metrics, step=rnd)
+                    # Update Prometheus gauges
+                    if "accuracy" in metrics:
+                        GLOBAL_ACCURACY.set(metrics["accuracy"])
+                    if "loss" in metrics:
+                        GLOBAL_LOSS.set(metrics["loss"])
                 
                 # Log the model
                 mlflow.tensorflow.log_model(model, artifact_path=f"model_round_{rnd}")
@@ -68,6 +81,11 @@ def main():
     )
 
     server_config = ServerConfig(num_rounds=3)
+    
+    # Start Prometheus metrics server on port 9090
+    print("Starting Prometheus Metrics Server on port 9090...")
+    start_http_server(9090)
+
     print("Starting Flower Server...")
     fl.server.start_server(
         server_address="0.0.0.0:8080",
